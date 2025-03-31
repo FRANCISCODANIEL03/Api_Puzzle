@@ -28,3 +28,16 @@ def buscar_solucion_DFS_rec(nodo, solucion, visitados, limite, conexiones):
                 if sol != None:
                     return sol
         return None
+        
+if __name__ == "__main__":
+    conexiones = {
+        'EDO.MEX':{'QRO','SLP','SONORA'},
+        'PUEBLA':{'HIDALGO','SLP'},
+        'CDMX':{'MICHOACAN'},
+        'MICHOACAN':{'SONORA'},
+        'SLP':{'QRO','PUEBLA','EDO.MEX','SONORA'},
+        'QRO':{'EDO.MEX','SLP'},
+        'HIDALGO':{'PUEBLA','SONORA'},
+        'MONTERREY':{'HIDALGO','SLP'},
+        'SONORA':{'MONTERREY','HIDALGO','SLP','EDO.MEX','MICHOACAN'}
+    }

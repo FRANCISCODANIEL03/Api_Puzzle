@@ -30,3 +30,10 @@ def medir_ciclos(codigo, repeticiones=1):
     tiempo_segundos = (fin - inicio) / 1e9  # Convertir nanosegundos a segundos
     ciclos = tiempo_segundos * frecuencia_cpu
     return int(ciclos)
+
+# Ejemplo de uso
+def mi_codigo():
+    suma = 0
+    for i in range(1000):
+        suma += i
+

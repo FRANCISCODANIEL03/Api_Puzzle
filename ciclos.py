@@ -14,3 +14,19 @@ def obtener_frecuencia_cpu():
 
     # Si no se puede obtener, devuelve un valor predeterminado (3 GHz)
     return 3e9
+
+def medir_ciclos(codigo, repeticiones=1):
+    """Mide los ciclos de reloj que tarda en ejecutarse un código."""
+    frecuencia_cpu = obtener_frecuencia_cpu()
+    
+    if frecuencia_cpu is None:
+        raise RuntimeError("No se pudo obtener la frecuencia del CPU")
+
+    inicio = time.perf_counter_ns()  # Tiempo en nanosegundos
+    for _ in range(repeticiones):
+        codigo()
+    fin = time.perf_counter_ns()
+
+    tiempo_segundos = (fin - inicio) / 1e9  # Convertir nanosegundos a segundos
+    ciclos = tiempo_segundos * frecuencia_cpu
+    return int(ciclos)

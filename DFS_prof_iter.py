@@ -41,3 +41,21 @@ if __name__ == "__main__":
         'MONTERREY':{'HIDALGO','SLP'},
         'SONORA':{'MONTERREY','HIDALGO','SLP','EDO.MEX','MICHOACAN'}
     }
+
+    estado_inicial = 'EDO.MEX'
+    solucion = 'HIDALGO'
+    nodo_inicial = Nodo(estado_inicial)
+    nodo = DFS_prof_iter(nodo_inicial, solucion, conexiones)
+
+    # Mostrar resultado
+    if nodo is not None:
+        resultado = []
+        while nodo.get_padre() != None:
+            resultado.append(nodo.get_datos())
+            nodo = nodo.get_padre()
+    
+        resultado.append(estado_inicial)
+        resultado.reverse()
+        print(resultado)
+    else:
+        print("no hay solucion")

@@ -37,3 +37,5 @@ def mi_codigo():
     for i in range(1000):
         suma += i
 
+ciclos = medir_ciclos(mi_codigo, repeticiones=10)
+print(f"Ciclos de reloj estimados: {ciclos}")

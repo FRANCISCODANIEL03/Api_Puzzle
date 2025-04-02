@@ -14,3 +14,6 @@ def en_ruta(rutas, ciudad):
         if ciudad in r:
             return r
     return None
+
+def peso_ruta(ruta, pedidos):
+    return sum(pedidos[c] for c in ruta)

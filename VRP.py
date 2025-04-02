@@ -17,3 +17,6 @@ def en_ruta(rutas, ciudad):
 
 def peso_ruta(ruta, pedidos):
     return sum(pedidos[c] for c in ruta)
+
+def clientes_en_ruta(ruta):
+    return len(ruta)

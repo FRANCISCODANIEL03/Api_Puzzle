@@ -113,3 +113,6 @@ if __name__ == "__main__":
     }
 
     almacen = [19.43291511136525, -99.13336444220519] # CDMX
+    max_carga = 20
+    max_clientes = 5
+

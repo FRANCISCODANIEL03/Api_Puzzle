@@ -116,3 +116,8 @@ if __name__ == "__main__":
     max_carga = 20
     max_clientes = 5
 
+    restricciones_trafico = [
+        ('QRO', 'PUE'),
+        ('MTY', 'SPL'),
+        ('SON', 'GDL')
+    ]

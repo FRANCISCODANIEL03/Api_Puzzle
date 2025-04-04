@@ -121,3 +121,11 @@ if __name__ == "__main__":
         ('MTY', 'SPL'),
         ('SON', 'GDL')
     ]
+
+    rutas = vrp_voraz(coord, pedidos, almacen, max_carga, max_clientes, restricciones_trafico)
+    
+    print("Rutas generadas:")
+    for i, r in enumerate(rutas):
+        print(f"\nRuta {i+1}: {r}")
+        print(f"Peso de la ruta: {peso_ruta(r, pedidos)}")
+        print(f"Clientes en ruta: {clientes_en_ruta(r)}")

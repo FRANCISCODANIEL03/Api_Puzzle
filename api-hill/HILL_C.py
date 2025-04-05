@@ -65,3 +65,5 @@ if __name__ == "__main__":
     }
     
     ruta = hill_climbing(coord)
+    print(ruta)
+    print("Distancia Total: " + str(evalua_ruta(ruta)))

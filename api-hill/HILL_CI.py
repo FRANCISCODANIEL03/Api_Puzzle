@@ -20,3 +20,40 @@ def evalua_ruta(ruta):
     ciudad2 = ruta[0]
     total = total + distancia(coord[ciudad1], coord[ciudad2])
     return total
+
+def i_hill_climbing(coord):
+    # Crear ruta inicial aleatoria
+    ruta = []
+    for ciudad in coord:
+        ruta.append(ciudad)
+        mejor_ruta = ruta[:]
+        max_iteraciones = 10
+        
+    while max_iteraciones > 0:
+        mejora = True
+        # Generar nueva ruta aleatoria
+        random.shuffle(ruta)
+        while mejora:
+            mejora = False
+            dist_actual = evalua_ruta(ruta)
+            # Evaluar a los vecinos
+            for i in range(0,len(ruta)):
+                if mejora:
+                    break
+                for j in (0, len(ruta) - 1):
+                    if i!=j:
+                        ruta_tmp = ruta[:]
+                        #ruta_tmp = ruta_tmp[i]
+                        ruta_tmp[i] = ruta_tmp[i]
+                        ruta_tmp[j] = ruta_tmp[j]
+                        dist = evalua_ruta(ruta_tmp)
+                        if dist < dist_actual:
+                            # Se encontró un vecino que mejora el resultado
+                            mejora = True
+                            ruta = ruta_tmp[:]
+                            break
+        max_iteraciones -= 1
+        
+        if evalua_ruta(ruta) < evalua_ruta(mejor_ruta):
+            mejor_ruta = ruta[:]
+    return mejor_ruta

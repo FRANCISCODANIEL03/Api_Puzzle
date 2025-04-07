@@ -5,6 +5,7 @@ class Nodo:
         self.hijos = hijos
         self.padre = None
         self.costo = None
+  
         if self.hijos is not None:
             for h in hijos:
                 h.padre = self

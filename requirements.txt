@@ -3,5 +3,5 @@ flask_cors
 networkx
 matplotlib
 mysql-connector-python
-dotenv
+python-dotenv
 os

@@ -1,70 +1,27 @@
 from flask import Flask, jsonify,request
 from flask_cors import CORS, cross_origin
-from Arbol import Nodo
-from DFS_rec import buscar_solucion_DFS_rec
-from puzzle import buscar_solucion_BFS
-from DFS import buscar_solucion_DFS
+from dijkstra import dijkstra, representar_graficamente
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/dfs-rec", methods = ["POST"])
+@app.route("/grafo", methods = ["POST"])
 @cross_origin()
-def solucion():
+def nodos():
     body = request.json
     print(body)
-    i = body['estadoInicial']
-    s = body['solucion']
-    estado_inicial = i
-    solucion = s
-    visitados = []
-    nodo_inicial = Nodo(estado_inicial)
-    nodo = buscar_solucion_DFS_rec(nodo_inicial, solucion, visitados)
-    # Mostrar resultado 
-    resultado = []
-    while nodo.get_padre() is not None:
-        resultado.append(nodo.get_datos())
-        nodo = nodo.get_padre()
+    grafo = body['grafo']
+    nodo_inicial = body['nodoInicial']
+    nodo_final = body['nodoFinal']
+    
+    distancia, camino = dijkstra(grafo, nodo_inicial, nodo_final)
+    # Imprimir la distancia y el camino
+    print(f"Shortest distance: {distancia}")
+    print(f"Path taken: {camino}")
+    representar_graficamente(grafo, camino)
+    return jsonify(distancia, camino)
 
-    resultado.append(estado_inicial)
-    resultado.reverse()
-    return str(resultado)
 
-@app.route("/bfs", methods = ["POST"])
-@cross_origin()
-def solucion_bfs():
-    body = request.json
-    estado_inicial = body['estadoInicial']
-    solucion = body['solucion']
-    nodo_solucion = buscar_solucion_BFS(estado_inicial, solucion)
-    # Mostrar resultado 
-    resultado = []
-    nodo = nodo_solucion
-    while nodo.get_padre() is not None:
-        resultado.append(nodo.get_datos())
-        nodo = nodo.get_padre()
-
-    resultado.append(estado_inicial)
-    resultado.reverse()
-    return str(resultado)
-
-@app.route("/dfs", methods=["POST"])
-@cross_origin()
-def solucion_dfs():
-    body = request.json
-    estado_inicial = body['estadoInicial']
-    solucion = body['solucion']
-    nodo_solucion = buscar_solucion_DFS(estado_inicial, solucion)
-    # Mostrar resultado 
-    resultado = []
-    nodo = nodo_solucion
-    while nodo.get_padre() is not None:
-        resultado.append(nodo.get_datos())
-        nodo = nodo.get_padre()
-
-    resultado.append(estado_inicial)
-    resultado.reverse()
-    return str(resultado)
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=6000)
 

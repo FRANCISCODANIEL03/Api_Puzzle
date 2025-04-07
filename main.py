@@ -2,6 +2,12 @@ from flask import Flask, jsonify,request
 from flask_cors import CORS, cross_origin
 from dijkstra import dijkstra, representar_graficamente
 import mysql.connector
+from dotenv import load_dotenv
+import os
+from flask import send_file
+import io
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -22,17 +28,16 @@ def nodos():
     representar_graficamente(grafo, camino)
     return jsonify(distancia, camino)
 
-from flask import send_file
-import io
+
 
 @app.route("/imagen", methods=["GET"])
 @cross_origin()
 def obtener_imagen():
     conexion = mysql.connector.connect(
-        host="bltpsedcjatmi5mobxi6-mysql.services.clever-cloud.com",
-        user="uzfprw81c47ssrq8",
-        password="IbRqoqg9GZU4ln01Z0V4",
-        database="bltpsedcjatmi5mobxi6"
+        host=os.getenv("MYSQL_HOST"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        database=os.getenv("MYSQL_DATABASE")
     )
 
     cursor = conexion.cursor()

@@ -1,6 +1,35 @@
 from Arbol import Nodo
 import networkx as nx
 import matplotlib.pyplot as plt
+import mysql.connector
+import os
+from dotenv import load_dotenv
+# Cargar variables de entorno
+load_dotenv()
+
+def conectar_base_datos():
+    # Conexión a la base de datos
+    conexion = mysql.connector.connect(
+        host=os.getenv("MYSQL_HOST"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        database=os.getenv("MYSQL_DATABASE")
+    )
+
+    cursor = conexion.cursor()
+
+    # Leer imagen como binario
+    with open("grafo.png", "rb") as file:
+        imagen_binaria = file.read()
+
+    # Insertar en la base de datos
+    sql = "UPDATE imagenes SET imagen = %s WHERE id = %s"
+    #sql = "INSERT INTO imagenes (nombre, imagen) VALUES (%s, %s)"
+    cursor.execute(sql, (imagen_binaria, 1))
+
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
 def dijkstra(grafo, inicio, fin):
     """
@@ -49,13 +78,13 @@ def dijkstra(grafo, inicio, fin):
     # Retornar la distancia mas corta y el camino tomado
     return distancias[fin], camino
     
-
 def representar_graficamente(grafo, camino):
     """
     Funcion para representar el grafo y el camino tomado.
     :param grafo: El grafo representado como un diccionario.
     :param camino: El camino tomado.
     """
+    plt.clf()
 
     G = nx.Graph()
 
@@ -66,18 +95,19 @@ def representar_graficamente(grafo, camino):
     pos = nx.spring_layout(G)
     labels = nx.get_edge_attributes(G, 'weight')
 
-    nx.draw(G, pos, with_labels=True)
+    nx.draw(G, pos, with_labels=True,  node_size=1000, node_color='skyblue', font_size=12)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
     
     # Resaltar el camino
     aristas_camino = [(camino[i], camino[i + 1]) for i in range(len(camino) - 1)]
-    nx.draw_networkx_edges(G, pos, edgelist=aristas_camino, edge_color='r', width=2)
+    nx.draw_networkx_edges(G, pos, edgelist=aristas_camino, edge_color='r', width=4)
 
-    # Guardar el grafo como una imagen
+    # Guardar la figura
     plt.savefig("grafo.png")
+    conectar_base_datos()
+    plt.close()
 
-    plt.show()
-
+"""
 if __name__ == "__main__":
     # Pedir al usuario que ingrese el grafo
     nodos = input("Ingresa el numero de nodos del grafo: --> ")
@@ -107,7 +137,6 @@ if __name__ == "__main__":
                 grafo[nodo][str(j + 1)] = int(peso)
     print(grafo)
 
-    """
     grafo = {
         '1':{'2': 3,'3': 6},
         '2':{'1': 3,'3': 2, '4': 1},
@@ -117,7 +146,7 @@ if __name__ == "__main__":
         '6':{'5': 2,'7': 3},
         '7':{'5': 2,'6': 3}
     }
-    """
+
     # verificar si el grafo es valido
     nodo_inicio = input("Ingresa el nodo de inicio: --> ")
     nodo_fin = input("Ingresa el nodo de fin: --> ")
@@ -127,4 +156,5 @@ if __name__ == "__main__":
     print(f"Shortest distance: {distancia}")
     print(f"Path taken: {camino}")
     representar_graficamente(grafo, camino)
+"""
 

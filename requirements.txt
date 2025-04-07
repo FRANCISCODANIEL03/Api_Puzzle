@@ -4,4 +4,3 @@ networkx
 matplotlib
 mysql-connector-python
 python-dotenv
-os

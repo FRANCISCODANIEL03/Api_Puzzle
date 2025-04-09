@@ -72,3 +72,6 @@ if __name__ == "__main__":
         'QRO':(20.59719437542255, -100.38667040246602)
     }
     
+    ruta = i_hill_climbing(coord)
+    print(ruta)
+    print("Distancia Total: ", str(evalua_ruta(ruta)))

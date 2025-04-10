@@ -22,3 +22,10 @@ def calcular_rutas():
     }
     ruta = hill_climbing(coord) 
     DistanciaTotal =  str(evalua_ruta(ruta, coord))
+
+    datos = {
+        "ruta": ruta,
+        "distancia_total": DistanciaTotal
+    }
+
+    return jsonify(datos)

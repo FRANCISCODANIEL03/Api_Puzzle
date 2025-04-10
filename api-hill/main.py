@@ -20,3 +20,5 @@ def calcular_rutas():
         'CDMX':(19.432713075976878, -99.13318344772986),
         'QRO':(20.59719437542255, -100.38667040246602)
     }
+    ruta = hill_climbing(coord) 
+    DistanciaTotal =  str(evalua_ruta(ruta, coord))

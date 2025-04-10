@@ -4,3 +4,6 @@ from HILL_C import hill_climbing, evalua_ruta
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/hill', methods=['GET'])
+@cross_origin()

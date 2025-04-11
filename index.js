@@ -10,7 +10,12 @@ function crearFormulario() {
       alert("Debe ingresar un número de nodos mayor o igual a 2.");
       return;
     }
-  
+
+    if(cantidad > 10) {
+      alert("El número máximo de nodos es 10.");
+      return;
+    }
+
     form.classList.remove("hidden");
   
     for (let i = 1; i <= cantidad; i++) {
@@ -24,8 +29,25 @@ function crearFormulario() {
       }
     }
   }
+
+function limpiarTodo() {
+    // Limpiar campos
+    document.getElementById("nodos").value = "";
+    document.getElementById("inicio").value = "";
+    document.getElementById("fin").value = "";
   
-  document.getElementById("grafoForm").addEventListener("submit", function (e) {
+    // Ocultar formulario de aristas
+    document.getElementById("grafoForm").classList.add("hidden");
+  
+    // Limpiar inputs de aristas
+    document.getElementById("aristasContainer").innerHTML = "";
+  
+    // Limpiar resultados
+    document.getElementById("resultado").innerHTML = "";
+}
+  
+  
+document.getElementById("grafoForm").addEventListener("submit", function (e) {
     e.preventDefault();
   
     const cantidad = parseInt(document.getElementById("nodos").value);
@@ -94,14 +116,19 @@ function crearFormulario() {
         return response.json();
       })
       .then(([distancia, camino]) => {
+        const timestamp = new Date().getTime();
+        const imagenURL = `https://api-puzzle-1.onrender.com/imagen?t=${timestamp}`;
+
         resultadoDiv.innerHTML = `
-          <p><strong>Distancia más corta:</strong> ${distancia}</p>
-          <p><strong>Camino:</strong> ${camino.join(" ➝ ")}</p>
-          <img src="https://api-puzzle-1.onrender.com/imagen" alt="Imagen del grafo" />
+            <p><strong>Distancia más corta:</strong> ${distancia}</p>
+            <p><strong>Camino:</strong> ${camino.join(" ➝ ")}</p>
+            <p><strong>Imagen del grafo:</strong></p>
+            <img src="${imagenURL}" alt="Imagen del grafo" />
         `;
       })
       .catch(error => {
-        resultadoDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+        resultadoDiv.innerHTML = `<p style="color:red;">Error al obtener recursos</p>`;
+        console.log(error);
+        
       });
-  });
-  
+}); 

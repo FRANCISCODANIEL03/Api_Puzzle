@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VRP - Rutas Óptimas</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Rutas (VRP)</h1>
+    <form id="vrpForm">
+      <label>Selecciona el Almacén:</label>
+      <select id="almacen" required>
+        <option value="CDMX">CDMX</option>
+        <option value="EDO.MEX">EDO.MEX</option>
+        <option value="QRO">QRO</option>
+        <option value="SPL">SPL</option>
+        <option value="MTY">MTY</option>
+        <option value="PUE">PUE</option>
+        <option value="GDL">GDL</option>
+        <option value="MICH">MICH</option>
+        <option value="SON">SON</option>
+      </select>
+
+      <label>Máxima carga:</label>
+      <input type="number" id="max_carga" value="40" required />
+
+      <label>Máximo de clientes por ruta:</label>
+      <input type="number" id="max_clientes" value="4" required />
+
+      <label>Restricciones de tráfico:</label>
+      <div id="restriccionesContainer"></div>
+      <button type="button" id="agregarRestriccion">+ Añadir restricción</button>
+
+      <button type="submit">Calcular Rutas</button>
+    </form>
+
+    <div id="resultados"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

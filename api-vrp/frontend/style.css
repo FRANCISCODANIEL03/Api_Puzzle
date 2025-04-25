@@ -1,0 +1,81 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fff7f0;
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .formulario {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  h1 {
+    color: #e64a19;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    margin-top: 1rem;
+    color: #e64a19;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 0.3rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  #restriccionesContainer .restriccion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .borrarRestriccion {
+    background-color: #ff7043;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .borrarRestriccion:hover {
+    background-color: #e64a19;
+  }
+  
+  button {
+    background-color: #ff7043;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
+  button:hover {
+    background-color: #e64a19;
+  }
+  
+  .ruta {
+    background-color: #fff3e0;
+    border-left: 4px solid #e64a19;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 12px;
+  }
+  

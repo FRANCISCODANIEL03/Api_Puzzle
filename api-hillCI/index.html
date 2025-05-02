@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ruta Óptima con Hill Climbing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #90e0ef;
+      padding: 30px;
+    }
+
+    h1 {
+        margin-top: 0;
+      color: #333;
+    }
+
+    button {
+      background-color: #03045e;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #resultado {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #00b4d8;;
+    }
+
+    th {
+      background-color: #00b4d8;
+      color: white;
+    }
+
+    .etiqueta {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .valor {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Hill Climbing Iterativo</h1>
+  <button onclick="calcularRuta()">Calcular Nueva Ruta</button>
+
+  <div id="resultado">
+    <p class="etiqueta">Distancia total:</p>
+    <p class="valor" id="distancia"></p>
+
+    <table id="tabla-ruta">
+      <thead>
+        <tr>
+          <th>Coordenadas</th>
+          <th>Ciudad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Las filas se llenan dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const coordenadas = {
+      'Jiloyork': [19.916012, -99.580580],
+      'Toluca': [19.289165, -99.655697],
+      'Atlacomulco': [19.799520, -99.873844],
+      'Guadalajara': [20.677754472859146, -103.34625354877137],
+      'Monterrey': [25.69161110159454, -100.321838480256],
+      'QuintanaRoo': [21.163111924844458, -86.80231502121464],
+      'Michohacan': [19.701400113725654, -101.20829680213464],
+      'Aguascalientes': [21.87641043660486, -102.26438663286967],
+      'CDMX': [19.432713075976878, -99.13318344772986],
+      'QRO': [20.59719437542255, -100.38667040246602]
+    };
+
+    function calcularRuta() {
+      fetch('https://hill-climbingci.onrender.com/hillCI')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error en la respuesta de la API');
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('distancia').textContent = data.distancia_total;
+          document.getElementById('resultado').style.display = 'block';
+
+          const tbody = document.getElementById('tabla-ruta').querySelector('tbody');
+          tbody.innerHTML = '';
+
+          data.ruta.forEach(ciudad => {
+            const fila = document.createElement('tr');
+
+            const celdaCoord = document.createElement('td');
+            const coords = coordenadas[ciudad];
+            celdaCoord.textContent = `(${coords[0].toFixed(5)}, ${coords[1].toFixed(5)})`;
+
+            const celdaCiudad = document.createElement('td');
+            celdaCiudad.textContent = ciudad;
+
+            fila.appendChild(celdaCoord);
+            fila.appendChild(celdaCiudad);
+            tbody.appendChild(fila);
+          });
+        })
+        .catch(error => {
+          alert("Error al conectar con la API: " + error.message);
+          console.error(error);
+        });
+    }
+  </script>
+
+</body>
+</html>

@@ -26,3 +26,12 @@ def generar_vecinos(ruta):
 def es_tabu(movimiento, memoria_tabu):
     a, b = movimiento
     return f"{a}_{b}" in memoria_tabu or f"{b}_{a}" in memoria_tabu
+
+def actualizar_memoria(memoria_tabu):
+    eliminar = []
+    for key in memoria_tabu:
+        memoria_tabu[key] -= 1
+        if memoria_tabu[key] <= 0:
+            eliminar.append(key)
+    for key in eliminar:
+        del memoria_tabu[key]

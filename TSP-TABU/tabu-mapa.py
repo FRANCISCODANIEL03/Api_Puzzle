@@ -13,3 +13,12 @@ def evalua_ruta(ruta, coord):
     for i in range(len(ruta) - 1):
         total += distancia(coord[ruta[i]], coord[ruta[i + 1]])
     return total 
+
+def generar_vecinos(ruta):
+    vecinos = []
+    for i in range(len(ruta)):
+        for j in range(i + 1, len(ruta)):
+            vecino = ruta[:]
+            vecino[i], vecino[j] = vecino[j], vecino[i]
+            vecinos.append((vecino, (ruta[i], ruta[j])))
+    return vecinos

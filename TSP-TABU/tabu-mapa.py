@@ -35,3 +35,28 @@ def actualizar_memoria(memoria_tabu):
             eliminar.append(key)
     for key in eliminar:
         del memoria_tabu[key]
+
+def busqueda_tabu(ruta_inicial, coord, iteraciones=100, persistencia=5):
+    mejor_ruta = ruta_inicial[:]
+    mejor_distancia = evalua_ruta(mejor_ruta, coord)
+    memoria_tabu = {}
+
+    ruta_actual = ruta_inicial[:]
+
+    for _ in range(iteraciones):
+        vecinos = generar_vecinos(ruta_actual)
+        vecinos.sort(key=lambda x: evalua_ruta(x[0], coord))
+
+        for vecino, movimiento in vecinos:
+            if not es_tabu(movimiento, memoria_tabu) or evalua_ruta(vecino, coord) < mejor_distancia:
+                ruta_actual = vecino[:]
+                distancia_actual = evalua_ruta(ruta_actual, coord)
+                if distancia_actual < mejor_distancia:
+                    mejor_ruta = ruta_actual[:]
+                    mejor_distancia = distancia_actual
+                memoria_tabu[f"{movimiento[0]}_{movimiento[1]}"] = persistencia
+                break
+
+        actualizar_memoria(memoria_tabu)
+
+    return mejor_ruta

@@ -22,3 +22,7 @@ def generar_vecinos(ruta):
             vecino[i], vecino[j] = vecino[j], vecino[i]
             vecinos.append((vecino, (ruta[i], ruta[j])))
     return vecinos
+
+def es_tabu(movimiento, memoria_tabu):
+    a, b = movimiento
+    return f"{a}_{b}" in memoria_tabu or f"{b}_{a}" in memoria_tabu

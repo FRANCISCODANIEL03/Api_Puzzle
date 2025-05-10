@@ -60,3 +60,25 @@ def busqueda_tabu(ruta_inicial, coord, iteraciones=100, persistencia=5):
         actualizar_memoria(memoria_tabu)
 
     return mejor_ruta
+
+def graficar_ruta_grafo(ruta, coord, titulo, nombre_archivo):
+    G = nx.DiGraph()
+    leyenda = {}
+
+    for i, ciudad in enumerate(ruta):
+        numero = i + 1
+        G.add_node(numero, pos=coord[ciudad])
+        leyenda[numero] = ciudad
+
+    for i in range(len(ruta) - 1):  # <- evita cerrar el ciclo
+        G.add_edge(i + 1, i + 2)
+
+    pos = nx.spring_layout(G, seed=42)  # diseño automático legible
+    nx.draw(G, pos, with_labels=True, node_size=700, node_color='skyblue', edge_color='gray', font_weight='bold')
+
+    leyenda_texto = "\n".join(f"{num}. {nombre}" for num, nombre in leyenda.items())
+    plt.title(titulo)
+    plt.figtext(0.98, 0.5, leyenda_texto, va="center", ha="left", fontsize=9, bbox=dict(facecolor='white', edgecolor='gray'))
+    plt.tight_layout()
+    plt.savefig(nombre_archivo, bbox_inches='tight')
+    plt.close()

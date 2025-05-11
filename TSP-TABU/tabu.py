@@ -80,3 +80,6 @@ if __name__ == "__main__":
 
     print("Ruta inicial:", ruta)
     mejor_ruta = busqueda_tabu(ruta, coord, max_iter=500, tabu_tam=15)
+    print("Mejor ruta:", mejor_ruta)
+    print("Distancia incial:", evalua_ruta(ruta, coord))
+    print("Distancia mejorada:", evalua_ruta(mejor_ruta, coord))

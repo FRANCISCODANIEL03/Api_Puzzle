@@ -77,3 +77,6 @@ if __name__ == "__main__":
 
     ruta = list(coord.keys())
     random.shuffle(ruta)
+
+    print("Ruta inicial:", ruta)
+    mejor_ruta = busqueda_tabu(ruta, coord, max_iter=500, tabu_tam=15)

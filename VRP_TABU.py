@@ -28,3 +28,13 @@ def distancia_total(rutas, coord, almacen):
                 total += distancia(coord[ruta[i]], coord[ruta[i+1]])
             total += distancia(coord[ruta[-1]], almacen)  # del último al almacén
     return total
+
+def es_factible(rutas, pedidos, max_carga, max_clientes, restricciones):
+    for ruta in rutas:
+        if peso_ruta(ruta, pedidos) > max_carga or clientes_en_ruta(ruta) > max_clientes:
+            return False
+        for i in range(len(ruta) - 1):
+            if esta_restringido(ruta[i], ruta[i+1], restricciones):
+                return False
+    return True
+

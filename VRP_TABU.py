@@ -38,3 +38,9 @@ def es_factible(rutas, pedidos, max_carga, max_clientes, restricciones):
                 return False
     return True
 
+def en_ruta(rutas, ciudad):
+    for r in rutas:
+        if ciudad in r:
+            return r
+    return None
+

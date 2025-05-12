@@ -12,3 +12,6 @@ def distancia(coord1, coord2):
 
 def peso_ruta(ruta, pedidos):
     return sum(pedidos[c] for c in ruta)
+
+def clientes_en_ruta(ruta):
+    return len(ruta)

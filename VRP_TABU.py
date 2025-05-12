@@ -15,3 +15,6 @@ def peso_ruta(ruta, pedidos):
 
 def clientes_en_ruta(ruta):
     return len(ruta)
+
+def esta_restringido(ciudad1, ciudad2, restricciones):
+    return (ciudad1, ciudad2) in restricciones or (ciudad2, ciudad1) in restricciones

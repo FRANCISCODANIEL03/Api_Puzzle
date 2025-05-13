@@ -104,3 +104,17 @@ def vrp_voraz(coord, pedidos, almacen, max_carga, max_clientes, restricciones_tr
                     rutas.remove(rC2)
 
     return rutas
+# ------------------ Vecindario: Intercambio entre rutas ------------------
+
+def generar_vecinos(solucion, pedidos, max_carga, max_clientes, restricciones):
+    vecinos = []
+    for i in range(len(solucion)):
+        for j in range(len(solucion)):
+            if i != j:
+                for ci in range(len(solucion[i])):
+                    for cj in range(len(solucion[j])):
+                        nueva = deepcopy(solucion)
+                        nueva[i][ci], nueva[j][cj] = nueva[j][cj], nueva[i][ci]
+                        if es_factible(nueva, pedidos, max_carga, max_clientes, restricciones):
+                            vecinos.append(nueva)
+    return vecinos

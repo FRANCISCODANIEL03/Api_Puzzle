@@ -176,3 +176,9 @@ if __name__ == "__main__":
     almacen = [19.43291511136525, -99.13336444220519] # CDMX
     max_carga = 50
     max_clientes = 5
+
+    restricciones_trafico = [
+        ('QRO', 'PUE'),
+        ('MTY', 'SPL'),
+        ('SON', 'GDL')
+    ]

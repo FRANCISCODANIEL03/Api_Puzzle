@@ -190,3 +190,11 @@ if __name__ == "__main__":
         print(f"\nRuta {i+1}: {r}")
         print(f"Peso: {peso_ruta(r, pedidos)}, Clientes: {clientes_en_ruta(r)}")
     print(f"\nDistancia total (voraz): {distancia_total(rutas_voraz, coord, almacen):.2f}")
+
+    # Solución mejorada (búsqueda tabú)
+    rutas_tabu = busqueda_tabu(coord, pedidos, almacen, max_carga, max_clientes, restricciones_trafico)
+    print("\n========== RUTAS OPTIMIZADAS (BÚSQUEDA TABÚ) ==========")
+    for i, r in enumerate(rutas_tabu):
+        print(f"\nRuta {i+1}: {r}")
+        print(f"Peso: {peso_ruta(r, pedidos)}, Clientes: {clientes_en_ruta(r)}")
+    print(f"\nDistancia total (tabú): {distancia_total(rutas_tabu, coord, almacen):.2f}")

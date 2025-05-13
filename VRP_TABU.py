@@ -182,3 +182,11 @@ if __name__ == "__main__":
         ('MTY', 'SPL'),
         ('SON', 'GDL')
     ]
+
+    # Solución inicial (voraz)
+    rutas_voraz = vrp_voraz(coord, pedidos, almacen, max_carga, max_clientes, restricciones_trafico)
+    print("\n========== RUTAS INICIALES (VORAZ) ==========")
+    for i, r in enumerate(rutas_voraz):
+        print(f"\nRuta {i+1}: {r}")
+        print(f"Peso: {peso_ruta(r, pedidos)}, Clientes: {clientes_en_ruta(r)}")
+    print(f"\nDistancia total (voraz): {distancia_total(rutas_voraz, coord, almacen):.2f}")

@@ -118,3 +118,30 @@ def generar_vecinos(solucion, pedidos, max_carga, max_clientes, restricciones):
                         if es_factible(nueva, pedidos, max_carga, max_clientes, restricciones):
                             vecinos.append(nueva)
     return vecinos
+
+# ------------------------ Búsqueda Tabú ------------------------
+
+def busqueda_tabu(coord, pedidos, almacen, max_carga, max_clientes, restricciones, iteraciones=100, tabu_tam=10):
+    mejor_sol = vrp_voraz(coord, pedidos, almacen, max_carga, max_clientes, restricciones)
+    mejor_coste = distancia_total(mejor_sol, coord, almacen)
+    actual_sol = deepcopy(mejor_sol)
+    lista_tabu = []
+
+    for _ in range(iteraciones):
+        vecinos = generar_vecinos(actual_sol, pedidos, max_carga, max_clientes, restricciones)
+        if not vecinos:
+            break
+        vecinos.sort(key=lambda r: distancia_total(r, coord, almacen))
+        for vecino in vecinos:
+            if vecino not in lista_tabu:
+                actual_sol = vecino
+                coste = distancia_total(vecino, coord, almacen)
+                if coste < mejor_coste:
+                    mejor_sol = vecino
+                    mejor_coste = coste
+                lista_tabu.append(vecino)
+                if len(lista_tabu) > tabu_tam:
+                    lista_tabu.pop(0)
+                break
+
+    return mejor_sol

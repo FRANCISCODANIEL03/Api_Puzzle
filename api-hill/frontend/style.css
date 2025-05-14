@@ -53,3 +53,7 @@ select {
   cursor: pointer;
   margin-bottom: 10px;
 }
+
+.borrarRestriccion:hover {
+  background-color: #e64a19;
+}

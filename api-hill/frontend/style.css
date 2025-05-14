@@ -43,3 +43,13 @@ select {
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
+
+.borrarRestriccion {
+  background-color: #ff7043;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-bottom: 10px;
+}

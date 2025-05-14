@@ -26,3 +26,13 @@ label {
   margin-top: 1rem;
   color: #e64a19;
 }
+
+input,
+select {
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 0.3rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}

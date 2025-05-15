@@ -15,3 +15,22 @@ def poblacion_inicial(max_poblacion, num_vars):
                 gen.append(0)
         poblacion.append(gen[:])
     return poblacion
+
+def adaptacion_3sat(gen, solucion):
+    # Contar Cláusulas correctas
+    n = 3
+    cont = 0
+    clausula_ok = True
+    for i in range(len(gen)):
+        n = n-1
+        if (gen[i] != solucion[i]):
+            clausula_ok = False
+            if n == 0:
+                if clausula_ok:
+                    cont = cont + 1
+                n = 3
+                clausula_ok = True
+        if n > 0:
+            if clausula_ok:
+                cont = cont + 1
+            return cont

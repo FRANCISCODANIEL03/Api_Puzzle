@@ -71,3 +71,11 @@ button {
 button:hover {
   background-color: #e64a19;
 }
+
+.ruta {
+  background-color: #fff3e0;
+  border-left: 4px solid #e64a19;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 12px;
+}

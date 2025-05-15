@@ -34,3 +34,10 @@ def adaptacion_3sat(gen, solucion):
             if clausula_ok:
                 cont = cont + 1
             return cont
+
+def evalua_poblacion(poblacion, solucion):
+    # Evalua todos los genes de la poblacion.
+    adaptacion = []
+    for i in range(len(poblacion)):
+        adaptacion.append(adaptacion_3sat(poblacion[i], solucion))
+        return adaptacion

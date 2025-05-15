@@ -75,3 +75,13 @@ def cruce(gen1, gen2):
     nuevo_gen2[0 :corte] = gen2[0 :corte]
     nuevo_gen2[corte :] = gen1[corte :]
     return nuevo_gen1, nuevo_gen2
+
+def mutacion(prob, gen):
+    # Muta el gen con una probabilidad Prob.
+    if random.random() < prob:
+        cromosoma = random.randint(0, len(gen)-1)
+        if gen[cromosoma] == 0:
+            gen[cromosoma] = 1
+        else:
+            gen[cromosoma] = 0
+    return gen

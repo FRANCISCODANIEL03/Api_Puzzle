@@ -95,3 +95,8 @@ def elimina_peores_genes(poblacion, solucion):
     # i = adaptacion.index(min(adaptacion))
     # del poblacion[i]
     # del adaptacion[i]
+
+def mejor_gen(poblacion, solucion):
+    # Devuelve el emjor gen de la población.
+    adaptacion = evalua_poblacion(poblacion, solucion)
+    return poblacion[adaptacion.index(max(adaptacion))]

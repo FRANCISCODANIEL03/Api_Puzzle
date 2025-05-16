@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rutas Optimización</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f0f2f5;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #512dab;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background-color: #3e1a8d;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+
+    #tempe{
+        margin-bottom: 20px;
+    }
+
+    label{
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    input{
+        font-size: 20px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Resultado de Optimización de Ruta</h1>
+  <div id="tempe">
+    <label> Temperatura</label>
+      <input type="number" id="temp">
+  </div>
+  <button onclick="obtenerDatos()">Consultar Ruta</button>
+
+  <div class="section" id="distancias"></div>
+
+  <div class="section">
+    <h2>Ruta Original</h2>
+    <ul id="rutaOriginal"></ul>
+  </div>
+
+  <div class="section">
+    <h2>Ruta Mejorada</h2>
+    <ul id="rutaMejorada"></ul>
+  </div>
+
+  <script>
+    async function obtenerDatos() {
+        temp = parseInt(document.getElementById("temp").value);
+        
+        
+      // Limpiar contenido previo
+      document.getElementById("distancias").innerHTML = "";
+      document.getElementById("rutaOriginal").innerHTML = "";
+      document.getElementById("rutaMejorada").innerHTML = "";
+
+      try {
+        const respuesta = await fetch("http://172.168.3.69:5001/tsp_mj", 
+            {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ temp })
+            }
+        ); 
+        if (!respuesta.ok) throw new Error("Respuesta no válida");
+
+        const datos = await respuesta.json();
+
+        // Mostrar distancias
+        document.getElementById("distancias").innerHTML = `
+          <h2>Distancias</h2>
+          <p><strong>Distancia total:</strong> ${datos.distancia_total}</p>
+          <p><strong>Distancia total mejorada:</strong> ${datos.distancia_total_mj}</p>
+        `;
+
+        // Mostrar ruta original
+        datos.ruta.forEach(ciudad => {
+          const li = document.createElement("li");
+          li.textContent = ciudad;
+          document.getElementById("rutaOriginal").appendChild(li);
+        });
+
+        // Mostrar ruta mejorada
+        datos.ruta_mejorada.forEach(ciudad => {
+          const li = document.createElement("li");
+          li.textContent = ciudad;
+          document.getElementById("rutaMejorada").appendChild(li);
+        });
+
+      } catch (error) {
+        document.getElementById("distancias").innerHTML = `<p class="error">❌ Error al obtener los datos de la API.</p>`;
+        console.error("Error:", error);
+      }
+    }
+  </script>
+</body>
+</html>

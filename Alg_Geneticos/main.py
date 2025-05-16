@@ -128,3 +128,21 @@ def algoritmo_genetico(max_iter=10, max_poblacion=50, num_vars=10, prob_mutacion
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route("/genes", methods=["POST"])
+def procesar_ruta():
+    random.seed()
+    max_iter = request.json.get("max_iter")
+    max_poblacion = request.json.get("max_poblacion")
+    num_vars = request.json.get("num_vars")
+    prob_mutacion = request.json.get("prob_mutacion")
+    mejor_gen = algoritmo_genetico(max_iter, max_poblacion, num_vars, prob_mutacion)
+    Mejor_gen_encontrado = str(mejor_gen[0])
+    Funcion_de_adaptación = str(mejor_gen[1])
+    Solucion = str(mejor_gen[2])
+
+    return jsonify({
+        "mejor_gen_encontrado": Mejor_gen_encontrado,
+        "funcion_de_adaptacion": Funcion_de_adaptación,
+        "solucion": Solucion
+    })

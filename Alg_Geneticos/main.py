@@ -146,3 +146,6 @@ def procesar_ruta():
         "funcion_de_adaptacion": Funcion_de_adaptación,
         "solucion": Solucion
     })
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5001)

@@ -85,3 +85,13 @@ def mutacion(prob, gen):
         else:
             gen[cromosoma] = 0
     return gen
+
+def elimina_peores_genes(poblacion, solucion):
+    # Elemina los dos peores genes.
+    adaptacion = evalua_poblacion(poblacion, solucion)
+    i = adaptacion.index(min(adaptacion))
+    del poblacion[i]
+    del adaptacion[i]
+    # i = adaptacion.index(min(adaptacion))
+    # del poblacion[i]
+    # del adaptacion[i]

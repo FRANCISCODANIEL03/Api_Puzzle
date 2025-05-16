@@ -125,3 +125,6 @@ def algoritmo_genetico(max_iter=10, max_poblacion=50, num_vars=10, prob_mutacion
     sol = str(solucion)
     mejor = mejor_gen(poblacion, solucion)
     return mejor, adaptacion_3sat(mejor, solucion), sol
+
+app = Flask(__name__)
+CORS(app)

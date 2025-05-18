@@ -61,3 +61,14 @@ def seleccion(poblacion, solucion):
             gen2 = poblacion[i]
         break
     return gen1, gen2
+
+def cruce(gen1, gen2):
+    # Cruza dos genes y obtiene dos descendientes
+    nuevo_gen1 = []
+    nuevo_gen2 = []
+    corte = random.randint(0, len(gen1))
+    nuevo_gen1[0 :corte] = gen1 [0 :corte]
+    nuevo_gen1[corte :] = gen2[corte :]
+    nuevo_gen2[0 :corte] = gen2[0 :corte]
+    nuevo_gen2[corte :] = gen1[corte :]
+    return nuevo_gen1, nuevo_gen2

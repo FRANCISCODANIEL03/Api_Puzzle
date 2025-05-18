@@ -97,3 +97,28 @@ def mejor_gen(poblacion, solucion):
     # Devuelve el emjor gen de la población.
     adaptacion = evalua_poblacion(poblacion, solucion)
     return poblacion[adaptacion.index(max(adaptacion))]
+
+def algoritmo_genetico(max_iter=10, max_poblacion=50, num_vars=10, prob_mutacion=0.1):
+    fin = False
+    solucion = poblacion_inicial(1, num_vars)[0]
+    poblacion = poblacion_inicial(max_poblacion, num_vars)
+
+    iteraciones = 0
+    while not fin:
+        iteraciones = iteraciones + 1
+        for i in range((len(poblacion))//2):
+            gen1, gen2 = seleccion(poblacion, solucion)
+            nuevo_gen1, nuevo_gen2 = cruce(gen1, gen2)
+            nuevo_gen1 = mutacion(prob_mutacion, nuevo_gen1)
+            nuevo_gen2 = mutacion(prob_mutacion, nuevo_gen2)
+            poblacion.append(nuevo_gen1)
+            poblacion.append(nuevo_gen2)
+            elimina_peores_genes(poblacion, solucion)
+
+        if max_iter < iteraciones:
+            fin = True
+
+    print("Solución: " +str(solucion))
+    sol = str(solucion)
+    mejor = mejor_gen(poblacion, solucion)
+    return mejor, adaptacion_3sat(mejor, solucion), sol

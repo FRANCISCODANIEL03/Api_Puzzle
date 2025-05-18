@@ -38,3 +38,26 @@ def evalua_poblacion(poblacion, solucion):
     for i in range(len(poblacion)):
         adaptacion.append(adaptacion_3sat(poblacion[i], solucion))
         return adaptacion
+
+def seleccion(poblacion, solucion):
+    adaptacion = evalua_poblacion(poblacion, solucion)
+    # Suma todas las puntuaciones
+    total = 0
+    for i in range(len(adaptacion)):
+        total = total + adaptacion[i]
+    # Seleccionar dos elementos
+    val1 = random.randint(0, total)
+    val2 = random.randint(0, total)
+    sum_sel = 0
+    for i in range(len(adaptacion)):
+        sum_sel = sum_sel + adaptacion[i]
+        if sum_sel >= val1:
+            gen1 = poblacion[i]
+        break
+    sum_sel = 0
+    for i in range(len(adaptacion)):
+        sum_sel = sum_sel + adaptacion[i]
+        if sum_sel >= val2:
+            gen2 = poblacion[i]
+        break
+    return gen1, gen2

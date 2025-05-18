@@ -122,3 +122,10 @@ def algoritmo_genetico(max_iter=10, max_poblacion=50, num_vars=10, prob_mutacion
     sol = str(solucion)
     mejor = mejor_gen(poblacion, solucion)
     return mejor, adaptacion_3sat(mejor, solucion), sol
+
+if __name__ == "__main__":
+    random.seed()
+    mejor_gen = algoritmo_genetico()
+    print("Mejor gen encontrado: " + str(mejor_gen[0]))
+    print("Función de adaptación: " + str(mejor_gen[1]))
+    print("Solución: " + str(mejor_gen[2]))

@@ -16,5 +16,11 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
       body: JSON.stringify(datos)
     });
 
+    if (!respuesta.ok) {
+      throw new Error(`Error HTTP: ${respuesta.status}`);
+    }
+
+    const resultado = await respuesta.json();
+
   }
 });

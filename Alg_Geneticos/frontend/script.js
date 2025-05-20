@@ -22,5 +22,9 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
 
     const resultado = await respuesta.json();
 
+    // Parsear si vienen como strings
+    const mejorGen = JSON.parse(resultado.mejor_gen_encontrado);
+    const solucion = JSON.parse(resultado.solucion);
+
   }
 });

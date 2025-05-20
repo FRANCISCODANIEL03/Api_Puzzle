@@ -26,5 +26,17 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
     const mejorGen = JSON.parse(resultado.mejor_gen_encontrado);
     const solucion = JSON.parse(resultado.solucion);
 
+    // Mostrar resultados
+    const contenedor = document.getElementById('resultado');
+    contenedor.innerHTML = `
+      <div class="datos">
+        <p><strong>Función de adaptación:</strong> ${resultado.funcion_de_adaptacion}</p>
+        <p><strong>Mejor gen encontrado:</strong> ${mejorGen.join(', ')}</p>
+        <p><strong>Solución:</strong> ${solucion.join(', ')}</p>
+      </div>
+      <div class="tarjetas">
+        ${solucion.map((gen, i) => `<div class="tarjeta">Gen ${i + 1}: ${gen}</div>`).join('')}
+      </div>
+    `;
   }
 });

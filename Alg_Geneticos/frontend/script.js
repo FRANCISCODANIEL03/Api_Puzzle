@@ -38,5 +38,10 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
         ${solucion.map((gen, i) => `<div class="tarjeta">Gen ${i + 1}: ${gen}</div>`).join('')}
       </div>
     `;
+  } catch (error) {
+    console.error('Error al hacer la solicitud:', error);
+    document.getElementById('resultado').innerHTML = `
+      <p style="color: red;"><strong>Error:</strong> No se pudo obtener la solución.</p>
+    `;
   }
 });

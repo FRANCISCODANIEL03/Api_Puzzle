@@ -3,10 +3,10 @@ import random
 # import networkx as nx
 # import matplotlib.pyplot as plt
 # import mysql.connector
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 # import os
 
-load_dotenv()
+#load_dotenv()
 
 def distancia(coord1, coord2):
     lat1, long1 = coord1

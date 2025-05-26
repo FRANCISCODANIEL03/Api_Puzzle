@@ -1,10 +1,10 @@
 import math
 import random
-import networkx as nx
-import matplotlib.pyplot as plt
-import mysql.connector
+# import networkx as nx
+# import matplotlib.pyplot as plt
+# import mysql.connector
 from dotenv import load_dotenv
-import os
+# import os
 
 load_dotenv()
 
@@ -59,51 +59,51 @@ def busqueda_tabu(ruta_inicial, coord, iteraciones=100, persistencia=5):
         actualizar_memoria(memoria_tabu)
     return mejor_ruta
 
-def conectar_base_datos(nombre_imagen, id_imagen):
-    conexion = mysql.connector.connect(
-        host=os.getenv("MYSQL_HOST"),
-        user=os.getenv("MYSQL_USER"),
-        password=os.getenv("MYSQL_PASSWORD"),
-        database=os.getenv("MYSQL_DATABASE")
-    )
-    cursor = conexion.cursor()
-    with open(nombre_imagen, "rb") as file:
-        imagen_binaria = file.read()
-    sql = """
-    INSERT INTO imagenes (id, imagen) VALUES (%s, %s)
-    ON DUPLICATE KEY UPDATE imagen = VALUES(imagen)
-    """
-    cursor.execute(sql, (id_imagen, imagen_binaria))
-    conexion.commit()
-    cursor.close()
-    conexion.close()
+# def conectar_base_datos(nombre_imagen, id_imagen):
+#     conexion = mysql.connector.connect(
+#         host=os.getenv("MYSQL_HOST"),
+#         user=os.getenv("MYSQL_USER"),
+#         password=os.getenv("MYSQL_PASSWORD"),
+#         database=os.getenv("MYSQL_DATABASE")
+#     )
+#     cursor = conexion.cursor()
+#     with open(nombre_imagen, "rb") as file:
+#         imagen_binaria = file.read()
+#     sql = """
+#     INSERT INTO imagenes (id, imagen) VALUES (%s, %s)
+#     ON DUPLICATE KEY UPDATE imagen = VALUES(imagen)
+#     """
+#     cursor.execute(sql, (id_imagen, imagen_binaria))
+#     conexion.commit()
+#     cursor.close()
+#     conexion.close()
 
 
-def graficar_ruta_nx(ruta, coord, titulo, nombre_archivo, id_imagen):
-    G = nx.DiGraph()
-    leyenda = {}
+# def graficar_ruta_nx(ruta, coord, titulo, nombre_archivo, id_imagen):
+#     G = nx.DiGraph()
+#     leyenda = {}
 
-    for i, ciudad in enumerate(ruta):
-        numero = i + 1
-        G.add_node(numero, pos=coord[ciudad])
-        leyenda[numero] = ciudad
+#     for i, ciudad in enumerate(ruta):
+#         numero = i + 1
+#         G.add_node(numero, pos=coord[ciudad])
+#         leyenda[numero] = ciudad
 
-    for i in range(len(ruta) - 1):  # No cerrar el ciclo
-        G.add_edge(i + 1, i + 2)
+#     for i in range(len(ruta) - 1):  # No cerrar el ciclo
+#         G.add_edge(i + 1, i + 2)
 
-    pos = nx.spring_layout(G, seed=42)  # diseño automático
-    nx.draw(G, pos, with_labels=True, node_size=700, node_color='skyblue', edge_color='gray', font_weight='bold')
+#     pos = nx.spring_layout(G, seed=42)  # diseño automático
+#     nx.draw(G, pos, with_labels=True, node_size=700, node_color='skyblue', edge_color='gray', font_weight='bold')
 
-    leyenda_texto = "\n".join(f"{num}. {nombre}" for num, nombre in leyenda.items())
-    plt.title(titulo)
-    plt.figtext(0.98, 0.5, leyenda_texto, va="center", ha="left", fontsize=9,
-                bbox=dict(facecolor='white', edgecolor='gray'))
-    plt.tight_layout()
-    plt.savefig(nombre_archivo)
-    plt.close()
+#     leyenda_texto = "\n".join(f"{num}. {nombre}" for num, nombre in leyenda.items())
+#     plt.title(titulo)
+#     plt.figtext(0.98, 0.5, leyenda_texto, va="center", ha="left", fontsize=9,
+#                 bbox=dict(facecolor='white', edgecolor='gray'))
+#     plt.tight_layout()
+#     plt.savefig(nombre_archivo)
+#     plt.close()
 
-    # Guardar en la base de datos
-    conectar_base_datos(nombre_archivo, id_imagen)
+#     # Guardar en la base de datos
+#     conectar_base_datos(nombre_archivo, id_imagen)
 
 
 
@@ -126,9 +126,9 @@ if __name__ == "__main__":
 
 
     
-    graficar_ruta_nx(ruta, coord, "Ruta Inicial", "ruta_inicial.png", id_imagen=1)
+    # graficar_ruta_nx(ruta, coord, "Ruta Inicial", "ruta_inicial.png", id_imagen=1)
     mejor_ruta = busqueda_tabu(ruta, coord)
-    graficar_ruta_nx(mejor_ruta, coord, "Mejor Ruta con Búsqueda Tabú", "ruta_optima.png", id_imagen=2)
+    # graficar_ruta_nx(mejor_ruta, coord, "Mejor Ruta con Búsqueda Tabú", "ruta_optima.png", id_imagen=2)
     
     print("Distancia inicial: ", evalua_ruta(ruta, coord))
     print("Distancia optimizada: ", evalua_ruta(mejor_ruta, coord))

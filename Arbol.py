@@ -8,7 +8,7 @@ class Nodo:
   
         if self.hijos is not None:
             for h in hijos:
-                h.padre = self
+                h.padre = sel
 
     def set_hijos(self, hijos):
         self.hijos = hijos

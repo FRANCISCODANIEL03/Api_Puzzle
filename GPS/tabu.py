@@ -27,3 +27,38 @@ def generar_vecinos(ruta):
             vecino[i], vecino[j] = vecino[j], vecino[i]
             vecinos.append((vecino, (ruta[i], ruta[j])))
     return vecinos
+
+# Búsqueda Tabú
+def busqueda_tabu(ruta_inicial, coord, max_iter=100, tabu_tam=10):
+    mejor_ruta = ruta_inicial[:]
+    mejor_costo = evalua_ruta(mejor_ruta, coord)
+    ruta_actual = mejor_ruta[:]
+    tabu = deque(maxlen=tabu_tam)
+
+    for _ in range(max_iter):
+        vecinos = generar_vecinos(ruta_actual)
+        mejor_vecino = None
+        mejor_vecino_costo = float('inf')
+        mejor_movimiento = None
+
+        for vecino, movimiento in vecinos:
+            if movimiento in tabu or (movimiento[1], movimiento[0]) in tabu:
+                continue
+
+            costo = evalua_ruta(vecino, coord)
+            if costo < mejor_vecino_costo:
+                mejor_vecino = vecino
+                mejor_vecino_costo = costo
+                mejor_movimiento = movimiento
+
+        if mejor_vecino is None:
+            break
+
+        ruta_actual = mejor_vecino[:]
+        tabu.append(mejor_movimiento)
+
+        if mejor_vecino_costo < mejor_costo:
+            mejor_ruta = mejor_vecino[:]
+            mejor_costo = mejor_vecino_costo
+
+    return mejor_ruta

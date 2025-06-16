@@ -259,17 +259,18 @@
     <div id="map">
       <div id="transporte-info">
         <div class="modo">
-          🚗 <span id="tiempo-auto">-</span>
+          🚗 <span id="tiempo-auto"></span>
         </div>
         <div class="modo">
-          🚲 <span id="tiempo-bici">-</span>
+          🚲 <span id="tiempo-bici"></span>
         </div>
         <div class="modo">
-          🚶‍♂️ <span id="tiempo-pie">-</span>
+          🚶‍♂️ <span id="tiempo-pie"></span>
         </div>
       </div>
     </div>
     <div class="menu-flotante">
+      <h2 id="distancia"></h2>
       <button id="btnIniciarViaje">Iniciar Viaje</button>
       <button id="btnSiguienteInstruccion" disabled>Siguiente Instrucción</button>
       <button id="btnCancelarViaje" disabled>Cancelar Viaje</button>
@@ -366,9 +367,10 @@
       const tiempoBici = (distanciaKm / VELOCIDAD_BICI).toFixed(2);
       const tiempoPie = (distanciaKm / VELOCIDAD_PIE).toFixed(2);
 
-      document.getElementById("tiempo-auto").innerText = `${tiempoAuto} h`;
-      document.getElementById("tiempo-bici").innerText = `${tiempoBici} h`;
-      document.getElementById("tiempo-pie").innerText = `${tiempoPie} h`;
+      document.getElementById("tiempo-auto").innerText = `- ${tiempoAuto} h`;
+      document.getElementById("distancia").innerText = `Distancia: ${distanciaKm} km`;
+      document.getElementById("tiempo-bici").innerText = `- ${tiempoBici} h`;
+      document.getElementById("tiempo-pie").innerText = `- ${tiempoPie} h`;
     }
 
     let rutaActual = [];
@@ -581,6 +583,12 @@
       destinoSel.selectedIndex = 0;
 
       intermediasDiv.querySelectorAll('input[type="checkbox"]').forEach(chk => chk.checked = false);
+      document.getElementById("chk_trafico").checked = false;
+
+      document.getElementById("tiempo-auto").innerText = '';
+      document.getElementById("distancia").innerText = '';
+      document.getElementById("tiempo-bici").innerText = '';
+      document.getElementById("tiempo-pie").innerText = '';
 
       instruccionesDiv.innerHTML = '';
       if (polyline) mapa.removeLayer(polyline);

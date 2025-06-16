@@ -241,6 +241,7 @@
         <label>Destino:
           <select id="destino"></select>
         </label>
+        <button id="btnSeleccionarMapa">Seleccionar puntos en mapa</button>
         <label>Ciudades intermedias:</label>
         <div id="intermedias" class="checklist"></div>
         <button id="btnGenerar" onclick="generarRuta()">Generar Ruta</button>
@@ -250,6 +251,9 @@
       <div>
         <label>
           <input type="checkbox" id="chk_trafico"> Evitar rutas muy transitadas
+        </label>
+        <label>
+          <input type="checkbox" id="chk_tranp"> viajar en transportes pesados
         </label>
       </div>
 
@@ -326,7 +330,11 @@
     const btnLimpiar = document.getElementById("btnLimpiar");
     const spinner = document.getElementById("spinner");
     const evitarTrafico = document.getElementById("chk_trafico").checked;
-    //const mostrarAlternativas = document.getElementById("chk_alternativas").checked;
+
+    let marcadorOrigen = null;
+    let marcadorDestino = null;
+    let seleccionando = "origen";  // Puede ser 'origen' o 'destino'
+
 
     // Carga opciones de ciudades en selects y checklist
     function cargarOpciones() {
@@ -353,6 +361,45 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(mapa);
+
+
+    document.getElementById("btnSeleccionarMapa").addEventListener("click", function () {
+      seleccionando = "origen";
+      alert("Haz clic en el mapa para seleccionar el origen");
+    });
+
+    document.getElementById("btnSeleccionarMapa").addEventListener("click", function () {
+      seleccionando = "origen";
+      alert("Haz clic en el mapa para seleccionar el origen");
+    });
+
+    mapa.on("click", function (e) {
+      const { lat, lng } = e.latlng;
+
+      if (seleccionando === "origen") {
+        if (marcadorOrigen) mapa.removeLayer(marcadorOrigen);
+        marcadorOrigen = L.marker([lat, lng], { draggable: true }).addTo(mapa).bindPopup("Origen").openPopup();
+        coordenadas["PuntoOrigen"] = [lat, lng];  // Guardamos como [lat, lon]
+        if (!Array.from(origenSel.options).some(opt => opt.value === "PuntoOrigen")) {
+          origenSel.add(new Option("PuntoOrigen", "PuntoOrigen"));
+        }
+        origenSel.value = "PuntoOrigen";
+        seleccionando = "destino";
+        alert("Ahora selecciona el destino haciendo clic en el mapa");
+      } else if (seleccionando === "destino") {
+        if (marcadorDestino) mapa.removeLayer(marcadorDestino);
+        marcadorDestino = L.marker([lat, lng], { draggable: true }).addTo(mapa).bindPopup("Destino").openPopup();
+        coordenadas["PuntoDestino"] = [lat, lng];  // Guardamos como [lat, lon]
+        if (!Array.from(destinoSel.options).some(opt => opt.value === "PuntoDestino")) {
+          destinoSel.add(new Option("PuntoDestino", "PuntoDestino"));
+        }
+        destinoSel.value = "PuntoDestino";
+        seleccionando = null;
+        alert("Origen y destino seleccionados. Ahora genera la ruta.");
+      }
+    });
+
+
 
     let polyline = null;
     window.marcadores = [];
@@ -403,8 +450,9 @@
       const nombresCiudades = [origen, ...intermedias, destino];
       const puntos = nombresCiudades.map(nombre => {
         const [lat, lon] = coordenadas[nombre];
-        return [lon, lat];
+        return [lon, lat]; // API requiere [lon, lat]
       });
+
 
       try {
         btnGenerar.disabled = true;
@@ -596,6 +644,11 @@
       window.marcadores = [];
 
       localStorage.removeItem("ultimaRuta");
+      if (marcadorOrigen) { mapa.removeLayer(marcadorOrigen); marcadorOrigen = null; }
+      if (marcadorDestino) { mapa.removeLayer(marcadorDestino); marcadorDestino = null; }
+      delete coordenadas["PuntoOrigen"];
+      delete coordenadas["PuntoDestino"];
+
     }
 
   </script>

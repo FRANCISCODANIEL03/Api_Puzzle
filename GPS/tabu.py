@@ -62,3 +62,20 @@ def busqueda_tabu(ruta_inicial, coord, max_iter=100, tabu_tam=10):
             mejor_costo = mejor_vecino_costo
 
     return mejor_ruta
+
+@app.route('/ruta', methods=['POST'])
+def ruta():
+    datos = request.get_json()
+    coords = datos['coordenadas']
+    ciudades_seleccionadas = datos['ruta']  # Ya contiene origen, intermedias y destino en orden
+
+    # Validar existencia de coordenadas
+    if not all(ciudad in coords for ciudad in ciudades_seleccionadas):
+        return jsonify({"error": "Una o más ciudades no tienen coordenadas"}), 400
+
+    ruta_optima = busqueda_tabu(ciudades_seleccionadas, coords)
+
+    return jsonify({"ruta": ruta_optima, "coordenadas": coords})
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5001)

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>GPS con Ruta Personalizada</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0a0a0a;
+      color: #d4ffd4;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: #6eff6e;
+      margin-bottom: 20px;
+    }
+
+    /* Contenedor general */
+    #container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      /* para flexbox overflow */
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 1000%;
+      max-width: 400px;
+      background-color: #0a0a0a;
+      border-right: 2px solid #00ff00;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      text-align: center;
+    }
+
+    /* Controles arriba */
+    #controls {
+      position: sticky;
+      top: 0;
+      background-color: #0a0a0a;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #00ff00;
+      z-index: 1000;
+      padding-top: 20px;
+    }
+
+    /* Select y botones */
+    select,
+    button {
+      width: 80%;
+      padding: 5px 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+    }
+
+    select {
+      background-color: #003300;
+      color: #d4ffd4;
+      border: 2px solid #00ff00;
+      box-shadow: 0 0 8px #00ff00;
+    }
+
+    button {
+      background-color: #0f0;
+      color: #000;
+      box-shadow: 0 0 15px #00ff00;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #00cc00;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Checklist de intermedias */
+    .checklist {
+      max-height: 65px;
+      overflow-y: auto;
+      border: 2px solid #00ff00;
+      padding: 10px;
+      border-radius: 12px;
+      background-color: #003300;
+      box-shadow: 0 0 8px #00ff00 inset;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .checklist label {
+      display: block;
+      margin-bottom: 6px;
+      cursor: pointer;
+      user-select: none;
+      color: #d4ffd4;
+      font-weight: bold;
+    }
+
+    /* Map */
+    #map {
+      flex: 1;
+      height: 100%;
+      border: 2px solid #00ff00;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #00ff00;
+    }
+
+    /* Instrucciones debajo */
+    #instrucciones {
+      margin-top: 15px;
+    }
+
+    /* Tarjetas instrucciones */
+    .ciudad-instrucciones {
+      background-color: #003300;
+      border: 2px solid #00ff00;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #00ff00;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      color: #d4ffd4;
+      text-align: left;
+    }
+
+    /* Spinner */
+    #spinner {
+      font-weight: bold;
+      color: #6eff6e;
+      margin-bottom: 15px;
+      display: none;
+      text-align: center;
+    }
+
+    #map {
+      position: relative;
+      /* Necesario para que el transporte-info se posicione dentro */
+    }
+
+    #transporte-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #003300cc;
+      /* oscuro con transparencia */
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 10px #00ff00;
+      color: #d4ffd4;
+      font-weight: bold;
+      text-align: left;
+      z-index: 1000;
+      /* para que quede sobre el mapa */
+    }
+
+
+    #transporte-info .modo {
+      margin-bottom: 5px;
+    }
+
+    #transporte-info .modo:last-child {
+      margin-bottom: 0;
+    }
+
+    .menu-flotante {
+      position: absolute;
+      top: 130px;
+      right: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      padding: 10px;
+      z-index: 1000;
+    }
+
+    .menu-flotante button {
+      display: block;
+      margin: 5px 0;
+      padding: 6px 10px;
+      background-color: #0f0;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .menu-flotante button:hover {
+      background-color: #00cc00;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      #container {
+        flex-direction: column;
+      }
+
+      #sidebar {
+        max-width: none;
+        width: 100%;
+        height: 320px;
+        border-right: none;
+        border-bottom: 2px solid #00ff00;
+      }
+
+      #map {
+        height: calc(100vh - 320px - 60px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container">
+    <div id="sidebar">
+      <div id="controls">
+        <label>Origen:
+          <select id="origen"></select>
+        </label>
+        <label>Destino:
+          <select id="destino"></select>
+        </label>
+        <label>Ciudades intermedias:</label>
+        <div id="intermedias" class="checklist"></div>
+        <button id="btnGenerar" onclick="generarRuta()">Generar Ruta</button>
+        <button id="btnLimpiar" onclick="limpiarSeleccion()">Limpiar Selección</button>
+        <div id="spinner">Calculando ruta...</div>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" id="chk_trafico"> Evitar rutas muy transitadas
+        </label>
+      </div>
+
+      <div id="instrucciones"></div>
+    </div>
+
+    <div id="map">
+      <div id="transporte-info">
+        <div class="modo">
+          🚗 <span id="tiempo-auto">-</span>
+        </div>
+        <div class="modo">
+          🚲 <span id="tiempo-bici">-</span>
+        </div>
+        <div class="modo">
+          🚶‍♂️ <span id="tiempo-pie">-</span>
+        </div>
+      </div>
+    </div>
+    <div class="menu-flotante">
+      <button id="btnIniciarViaje">Iniciar Viaje</button>
+      <button id="btnSiguienteInstruccion" disabled>Siguiente Instrucción</button>
+      <button id="btnCancelarViaje" disabled>Cancelar Viaje</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const coordenadas = {
+      'Aguascalientes': [21.8823, -102.2826],
+      'Baja California': [32.5149, -117.0382],
+      'Baja California Sur': [24.1426, -110.3128],
+      'Campeche': [19.8456, -90.5236],
+      'Chiapas': [16.7530, -93.1160],
+      'Chihuahua': [28.6353, -106.0889],
+      'CDMX': [19.4326, -99.1332],
+      'Coahuila': [25.4380, -100.9737],
+      'Colima': [19.2433, -103.7250],
+      'Durango': [24.0277, -104.6532],
+      'Estado de México': [19.2892, -99.6557],
+      'Guanajuato': [21.0190, -101.2574],
+      'Guerrero': [17.5529, -99.5021],
+      'Hidalgo': [20.1011, -98.7591],
+      'Jalisco': [20.6597, -103.3496],
+      'Jiloyork': [19.916012, -99.580580],
+      'Michoacán': [19.7050, -101.1940],
+      'Morelos': [18.9242, -99.2216],
+      'Nayarit': [21.5058, -104.8946],
+      'Nuevo León': [25.6866, -100.3161],
+      'Oaxaca': [17.0732, -96.7266],
+      'Puebla': [19.0414, -98.2063],
+      'Querétaro': [20.5888, -100.3899],
+      'Quintana Roo': [21.1619, -86.8515],
+      'San Luis Potosí': [22.1565, -100.9855],
+      'Sinaloa': [24.8091, -107.3940],
+      'Sonora': [29.0729, -110.9559],
+      'Tabasco': [17.9895, -92.9475],
+      'Tamaulipas': [23.7369, -99.1411],
+      'Tlaxcala': [19.3139, -98.2400],
+      'Veracruz': [19.1738, -96.1342],
+      'Yucatán': [20.9674, -89.5926],
+      'Zacatecas': [22.7709, -102.5832]
+    };
+
+    const API_KEY = "5b3ce3597851110001cf6248cc0a51050957409a856ff97193e338f6";
+
+    const origenSel = document.getElementById("origen");
+    const destinoSel = document.getElementById("destino");
+    const intermediasDiv = document.getElementById("intermedias");
+    const instruccionesDiv = document.getElementById("instrucciones");
+    const btnGenerar = document.getElementById("btnGenerar");
+    const btnLimpiar = document.getElementById("btnLimpiar");
+    const spinner = document.getElementById("spinner");
+    const evitarTrafico = document.getElementById("chk_trafico").checked;
+    //const mostrarAlternativas = document.getElementById("chk_alternativas").checked;
+
+    // Carga opciones de ciudades en selects y checklist
+    function cargarOpciones() {
+      for (let ciudad in coordenadas) {
+        origenSel.add(new Option(ciudad, ciudad));
+        destinoSel.add(new Option(ciudad, ciudad));
+
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.value = ciudad;
+        check.id = "chk_" + ciudad;
+
+        const label = document.createElement("label");
+        label.appendChild(check);
+        label.append(" " + ciudad);
+
+        intermediasDiv.appendChild(label);
+      }
+    }
+
+    cargarOpciones();
+
+    const mapa = L.map('map').setView([19.4, -99.15], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapa);
+
+    let polyline = null;
+    window.marcadores = [];
+
+    // Velocidades aproximadas en km/h
+    const VELOCIDAD_AUTO = 80;
+    const VELOCIDAD_BICI = 20;
+    const VELOCIDAD_PIE = 5;
+
+    function calcularTiempos(distanciaKm) {
+      const tiempoAuto = (distanciaKm / VELOCIDAD_AUTO).toFixed(2);
+      const tiempoBici = (distanciaKm / VELOCIDAD_BICI).toFixed(2);
+      const tiempoPie = (distanciaKm / VELOCIDAD_PIE).toFixed(2);
+
+      document.getElementById("tiempo-auto").innerText = `${tiempoAuto} h`;
+      document.getElementById("tiempo-bici").innerText = `${tiempoBici} h`;
+      document.getElementById("tiempo-pie").innerText = `${tiempoPie} h`;
+    }
+
+    let rutaActual = [];
+    let marcadorViaje = null;
+    let pasoActual = 0;
+    let indiceInstruccion = 0;
+    let puntoViaje = null;
+    let coordenadasRuta = [];
+    let viajeActivo = false;
+
+    document.getElementById("btnIniciarViaje").addEventListener("click", iniciarViaje);
+    document.getElementById("btnSiguienteInstruccion").addEventListener("click", avanzarInstruccion);
+    document.getElementById("btnCancelarViaje").addEventListener("click", cancelarViaje);
+
+    async function generarRuta() {
+      const origen = origenSel.value;
+      const destino = destinoSel.value;
+
+      if (origen === destino) {
+        alert("El origen y el destino no pueden ser iguales.");
+        return;
+      }
+
+      const intermedias = Array.from(intermediasDiv.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(c => c.value)
+        .filter(c => c !== origen && c !== destino);
+
+      const evitarTrafico = document.getElementById("chk_trafico").checked;
+
+      const nombresCiudades = [origen, ...intermedias, destino];
+      const puntos = nombresCiudades.map(nombre => {
+        const [lat, lon] = coordenadas[nombre];
+        return [lon, lat];
+      });
+
+      try {
+        btnGenerar.disabled = true;
+        spinner.style.display = "block";
+        instruccionesDiv.innerHTML = '';
+
+        const bodyData = {
+          coordinates: puntos,
+          language: "es",
+          preference: evitarTrafico ? "shortest" : "recommended"
+        };
+
+        console.log("BODY ENVIADO A LA API:", JSON.stringify(bodyData, null, 2));
+
+        const res = await fetch("https://api.openrouteservice.org/v2/directions/driving-car/geojson", {
+          method: "POST",
+          headers: {
+            "Authorization": API_KEY,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(bodyData)
+        });
+
+        if (!res.ok) throw new Error(`Error: ${res.status}`);
+        const data = await res.json();
+
+        if (polyline) mapa.removeLayer(polyline);
+        window.marcadores.forEach(m => mapa.removeLayer(m));
+        window.marcadores = [];
+
+        polyline = L.geoJSON(data.features[0], {
+          style: { color: 'green', weight: 5 }
+        }).addTo(mapa);
+        mapa.fitBounds(polyline.getBounds());
+
+        coordenadasRuta = [];
+        data.features[0].properties.segments.forEach(seg => {
+          seg.steps.forEach(step => {
+            step.way_points.forEach(idx => {
+              const punto = data.features[0].geometry.coordinates[idx];
+              coordenadasRuta.push([punto[1], punto[0]]);
+            });
+          });
+        });
+
+
+        puntos.forEach((p, i) => {
+          let color = i === 0 ? "red" : (i === puntos.length - 1 ? "green" : "blue");
+          const marker = L.circleMarker([p[1], p[0]], {
+            radius: 8,
+            fillColor: color,
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }).bindPopup(`${i === 0 ? 'Origen' : (i === puntos.length - 1 ? 'Destino' : 'Intermedio')}: ${nombresCiudades[i]}`);
+          marker.addTo(mapa);
+          window.marcadores.push(marker);
+        });
+
+        mostrarInstrucciones(data.features[0].properties.segments, nombresCiudades);
+
+        const distanciaMetros = data.features[0].properties.summary.distance;
+        const distanciaKm = (distanciaMetros / 1000).toFixed(2);
+        calcularTiempos(distanciaKm);
+
+      } catch (err) {
+        console.error("Routing error:", err);
+        alert("No se pudo calcular la ruta. Revisa los puntos o tu conexion a internet.");
+      } finally {
+        btnGenerar.disabled = false;
+        spinner.style.display = "none";
+      }
+    }
+    function iniciarViaje() {
+      if (!coordenadasRuta.length) {
+        alert("Primero genera una ruta.");
+        return;
+      }
+
+      if (puntoViaje) mapa.removeLayer(puntoViaje);
+
+      indiceInstruccion = 0;
+      viajeActivo = true;
+
+      puntoViaje = L.circleMarker(coordenadasRuta[0], {
+        radius: 7,
+        fillColor: "orange",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.9
+      }).addTo(mapa);
+
+      resaltarInstruccion(indiceInstruccion);
+
+      // Actualizar botones
+      document.getElementById("btnIniciarViaje").disabled = true;
+      document.getElementById("btnSiguienteInstruccion").disabled = false;
+      document.getElementById("btnCancelarViaje").disabled = false;
+    }
+
+    function avanzarInstruccion() {
+      if (!viajeActivo) {
+        alert("Debes iniciar el viaje primero.");
+        return;
+      }
+
+      indiceInstruccion++;
+      if (indiceInstruccion >= coordenadasRuta.length) {
+        alert("¡Llegaste al destino!");
+
+        // Scroll al inicio de las instrucciones
+        const primerDiv = document.querySelector("#instrucciones div");
+        if (primerDiv) {
+          primerDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        cancelarViaje();
+        return;
+      }
+
+      const nuevaPos = coordenadasRuta[indiceInstruccion];
+      puntoViaje.setLatLng(nuevaPos);
+      resaltarInstruccion(indiceInstruccion);
+    }
+
+    function cancelarViaje() {
+      viajeActivo = false;
+
+      if (puntoViaje) {
+        mapa.removeLayer(puntoViaje);
+        puntoViaje = null;
+      }
+
+      // Actualizar botones
+      document.getElementById("btnIniciarViaje").disabled = false;
+      document.getElementById("btnSiguienteInstruccion").disabled = true;
+      document.getElementById("btnCancelarViaje").disabled = true;
+    }
+
+
+    function resaltarInstruccion(indice) {
+      // Limpia el resaltado previo de todos los <li>
+      document.querySelectorAll("#instrucciones li").forEach(li => {
+        li.style.background = "";
+      });
+
+      const actual = document.querySelector(`#instruccion_${indice}`);
+      if (actual) {
+        actual.style.background = "#000";
+        actual.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+
+    function mostrarInstrucciones(segmentos, nombresCiudades) {
+      instruccionesDiv.innerHTML = ""; // limpia previo
+      let id = 0;
+      segmentos.forEach((segmento, i) => {
+        const div = document.createElement("div");
+        div.className = "ciudad-instrucciones";
+        div.innerHTML = `
+      <h3>Tramo hacia ${nombresCiudades[i + 1]}</h3>
+      <ul>
+        ${segmento.steps.map(s => `<li id="instruccion_${id++}">${s.instruction}</li>`).join('')}
+      </ul>
+    `;
+        instruccionesDiv.appendChild(div);
+      });
+    }
+
+    // Limpia selección y mapa sin recargar la página
+    function limpiarSeleccion() {
+      origenSel.selectedIndex = 0;
+      destinoSel.selectedIndex = 0;
+
+      intermediasDiv.querySelectorAll('input[type="checkbox"]').forEach(chk => chk.checked = false);
+
+      instruccionesDiv.innerHTML = '';
+      if (polyline) mapa.removeLayer(polyline);
+      window.marcadores.forEach(m => mapa.removeLayer(m));
+      window.marcadores = [];
+
+      localStorage.removeItem("ultimaRuta");
+    }
+
+  </script>
+
+</body>
+
+</html>
